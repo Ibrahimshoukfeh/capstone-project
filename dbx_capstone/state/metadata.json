@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "config": {
+    "bundle": {
+      "name": "dbx_capstone",
+      "target": "dev",
+      "git": {
+        "bundle_root_path": "."
+      }
+    },
+    "workspace": {
+      "file_path": "/Workspace/Users/ibrahimshoukfeh@kubrickgroup.com/dbx_capstone/files"
+    },
+    "resources": {
+      "jobs": {
+        "dbx_capstone-env-prep-job": {
+          "id": "299746897353217",
+          "relative_path": "databricks.yml"
+        }
+      }
+    },
+    "presets": {
+      "source_linked_deployment": false
+    }
+  },
+  "extra": {}
+}

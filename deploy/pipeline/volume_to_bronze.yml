@@ -1,0 +1,17 @@
+resources:
+  jobs:
+    Volume_to_Bronze:
+      name: Volume to Bronze
+      tasks:
+        - task_key: Volume_to_Bronze_Tables
+          notebook_task:
+            notebook_path: /Workspace/Shared/dbx_capstone/files/code/notebooks/volumetobronze
+            source: WORKSPACE
+          environment_key: Default
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED

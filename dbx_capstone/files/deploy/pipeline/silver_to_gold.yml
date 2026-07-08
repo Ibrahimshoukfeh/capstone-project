@@ -1,0 +1,12 @@
+resources:
+  jobs:
+    Gold_Aggregations:
+      name: Gold Aggregations
+      tasks:
+        - task_key: Silver_to_gold_aggs
+          notebook_task:
+            notebook_path: /Workspace/Shared/dbx_capstone/files/code/notebooks/silvertogold
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED

@@ -1,0 +1,53 @@
+source:
+  kaggle:
+    tables:
+    - name: customers
+      bronze_target_schema: bronze
+      bronze_table_name: Customers
+      silver_target_schema: silver
+      silver_table_name: Cleaned_Customers
+      transformation_path: transform_customers.py
+      transformation_function: transform_customers
+      primary_key_column: customer_id
+      expected_primary_key_format: ^C[0-9]{6}$
+    - name: products
+      bronze_target_schema: bronze
+      bronze_table_name: Products
+      silver_target_schema: silver
+      silver_table_name: Cleaned_Products
+      transformation_path: transform_products.py
+      transformation_function: transform_products
+      primary_key_column: product_id
+      expected_primary_key_format: ^P[0-9]{4}$
+    - name: sales
+      bronze_target_schema: bronze
+      bronze_table_name: Sales
+      silver_target_schema: silver
+      silver_table_name: Cleaned_Sales
+      transformation_path: transform_sales.py
+      transformation_function: transform_sales
+      primary_key_column: order_id
+      expected_primary_key_format: ^0RD[0-9]{8}$
+      foreign_key_columns: 
+        column_name:
+          - customer_id
+          - product_id
+        expected_format:
+          - ^C[0-9]{6}$
+          - ^P[0-9]{4}$
+    - name: stores
+      bronze_target_schema: bronze
+      bronze_table_name: Stores
+      silver_target_schema: silver
+      silver_table_name: Cleaned_Stores
+      transformation_path: transform_stores.py
+      transformation_function: transform_stores
+      primary_key_column: store_id
+    - name: calendar
+      bronze_target_schema: bronze
+      bronze_table_name: Calendar
+      silver_target_schema: silver
+      silver_table_name: Cleaned_Calendar
+      transformation_path: transform_calendar.py
+      transformation_function: transform_calendar
+      primary_key_column: date

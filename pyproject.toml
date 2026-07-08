@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "dbx_capstone_framework"
+version = "0.1.1"
+description = "Common Dbx Capstone Components"
+authors = ["Dbx Capstone Dev Team"]
+
+packages = [ 
+    { include = "dbx_capstone_framework", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
