@@ -138,3 +138,7 @@ dmypy.json
 cython_debug/
 
 .databricks
+dbx_capstone/
+
+# IDE workspace files (machine-specific)
+*.code-workspace
