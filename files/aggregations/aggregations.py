@@ -49,21 +49,69 @@ def main(spark):
     # =========================
     # 2. Lapsed Customers (2023 -> 2024)
     # =========================
-    
+    dated_sales = sales_df.filter(F.col("order_date").isNotNull())
+
+    customers_2023 = (
+        dated_sales
+        .filter(F.year("order_date") == 2023)
+        .select("customer_id")
+        .distinct()
+    )
+
+    customers_2024 = (
+        dated_sales
+        .filter(F.year("order_date") == 2024)
+        .select("customer_id")
+        .distinct()
+    )
+
+    lapsed_customers = customers_2023.join(customers_2024, on="customer_id", how="left_anti")
+
     # =========================
     # 3. STORE PERFORMANCE
     # =========================
-   
+    store_metrics = (
+        dated_sales
+        .join(
+            stores_df.select("store_id", "store_name", "city", "country", "store_type"),
+            on="store_id",
+            how="left"
+        )
+        .groupBy("store_id", "store_name", "city", "country", "store_type")
+        .agg(
+            F.round(F.sum("revenue"), 2).alias("total_revenue"),
+            F.sum("quantity").alias("total_units_sold"),
+            F.countDistinct("order_id").alias("total_orders")
+        )
+        .orderBy(F.col("total_revenue").desc())
+    )
+
     # =========================
     # 4. LOYALTY ANALYSIS
     # =========================
-   
+    order_counts = (
+        sales_df
+        .groupBy("customer_id")
+        .agg(F.countDistinct("order_id").alias("total_orders"))
+    )
+
+    loyalty_metrics = (
+        order_counts
+        .withColumn(
+            "loyalty_tier",
+            F.when(F.col("total_orders") == 1, "One-Time Buyer")
+             .when(F.col("total_orders") <= 3, "Occasional Buyer")
+             .otherwise("Loyal Customer")
+        )
+        .select("customer_id", "total_orders", "loyalty_tier")
+        .orderBy(F.col("total_orders").desc())
+    )
 
     # =========================
     # OUTPUT (DISPLAY OR SAVE)
     # =========================
     print("Monthly Metrics")
-    display(monthly_metrics)https://adb-693586493268953.13.azuredatabricks.net/editor/files/1996056115016906?o=693586493268953$0
+    display(monthly_metrics)
 
     print("Lapsed Customers")
     display(lapsed_customers)
@@ -75,10 +123,10 @@ def main(spark):
     display(loyalty_metrics)
 
     # OPTIONAL: Save as Gold tables
-    monthly_metrics.write.mode("overwrite").saveAsTable("dbx_capstone.gold.monthly_metrics")
-    lapsed_customers.write.mode("overwrite").saveAsTable("dbx_capstone.gold.lapsed_customers")
-    store_metrics.write.mode("overwrite").saveAsTable("dbx_capstone.gold.store_metrics")
-    loyalty_metrics.write.mode("overwrite").saveAsTable("dbx_capstone.gold.loyalty_metrics")
+    monthly_metrics.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable("dbx_capstone.gold.monthly_metrics")
+    lapsed_customers.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable("dbx_capstone.gold.lapsed_customers")
+    store_metrics.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable("dbx_capstone.gold.store_metrics")
+    loyalty_metrics.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable("dbx_capstone.gold.loyalty_metrics")
 
 
 # Entry point for Databricks job
